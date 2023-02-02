@@ -14,7 +14,7 @@ pub fn evaluate(inputs: &[CalculatorInput]) -> Option<i32> {
     }
 
     // a stack to hold operands
-    let mut stack: Vec<i32> = Vec::new();
+    let mut stack = Vec::new();
 
     // loop through all of the CalculatorInput
     for input in inputs {
@@ -24,24 +24,10 @@ pub fn evaluate(inputs: &[CalculatorInput]) -> Option<i32> {
                 // before matching the operation ensure operands are valid
 
                 // pop the right operand from the stack
-                let right_option = stack.pop();
-
-                // if the right operand is None return None to the calling function
-                // a right operand is required to perform an operation
-                let right_operand: i32 = match right_option {
-                    Some(i) => i,
-                    None => return None,
-                };
+                let right_operand = stack.pop()?;
 
                 // pop the left operand from the stack
-                let left_option = stack.pop();
-
-                // if the left operand is None return None to the calling function
-                // a left operand is required to perform an operation
-                let left_operand: i32 = match left_option {
-                    Some(i) => i,
-                    None => return None,
-                };
+                let left_operand = stack.pop()?;
 
                 // perform operation then push it onto the stack
                 match operation {
