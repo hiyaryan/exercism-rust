@@ -1,6 +1,6 @@
-use std::fmt::Debug;
 use enum_iterator::{all, Sequence};
 use int_enum::IntEnum;
+use std::fmt::Debug;
 
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, IntEnum, Sequence, PartialOrd, Ord)]
@@ -17,31 +17,19 @@ pub enum ResistorColor {
     Yellow = 4,
 }
 
-pub fn color_to_value(_color: ResistorColor) -> u32 {
-    _color.int_value()
+pub fn color_to_value(color: ResistorColor) -> u32 {
+    color.int_value()
 }
 
 pub fn value_to_color_string(value: u32) -> String {
-    if value == ResistorColor::Black.int_value() {
-        "Black".to_string()
-    } else if value == ResistorColor::Blue.int_value() {
-        "Blue".to_string()
-    } else if value == ResistorColor::Brown.int_value() {
-        "Brown".to_string()
-    } else if value == ResistorColor::Green.int_value() {
-        "Green".to_string()
-    } else if value == ResistorColor::Grey.int_value() {
-        "Grey".to_string()
-    } else if value == ResistorColor::Orange.int_value() {
-        "Orange".to_string()
-    } else if value == ResistorColor::Red.int_value() {
-        "Red".to_string()
-    } else if value == ResistorColor::Violet.int_value() {
-        "Violet".to_string()
-    } else if value == ResistorColor::White.int_value() {
-        "White".to_string()
-    } else if value == ResistorColor::Yellow.int_value() {
-        "Yellow".to_string()
+    if let Some(color) = ResistorColor::from_int(value).ok() {
+        // Use the enum's `Debug` output, which is the variant's name.
+        // This is a bit "brittle" in that we need to mind the enum's
+        // actual identifier, and special cases could become more difficult
+        // to untangle (what if we wanted to print "Gray" vs "Grey" based on locale?)
+        // but it allows us to keep the "source of truth" clear (the enum declaration)
+        // avoids repeatition
+        format!("{color:?}")
     } else {
         "value out of range".to_string()
     }

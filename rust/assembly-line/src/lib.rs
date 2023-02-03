@@ -1,21 +1,26 @@
-// This stub file contains items that aren't used yet; feel free to remove this module attribute
-// to enable stricter warnings.
-#![allow(unused)]
-
 pub fn production_rate_per_hour(speed: u8) -> f64 {
     let prod = (speed as f64) * 221_f64;
 
-    if (1..=4).contains(&speed) {
-        return prod
-    } else if (5..=8).contains(&speed) {
-        return prod * 0.90
-    } else if (9..=10).contains(&speed) {
-        return prod * 0.77
-    }
+    // Instead of making a `prod * multiplier` call in each branch,
+    // isolate only the differing behavior of each branch.
+    //
+    // Also, matching on a range implies the `contains` check.
+    let multiplier = match speed {
+        1..=4 => 1.00,
+        5..=8 => 0.90,
+        9..=10 => 0.77,
 
-    0.00
+        // Return early to distinct this is an "exception", even though
+        // letting the multiplier be `0.00` would have the same effect.
+        _ => return 0.00,
+    };
+
+    prod * multiplier
 }
 
 pub fn working_items_per_minute(speed: u8) -> u32 {
-    (production_rate_per_hour(speed) as u32) / 60
+    let rate_per_minute = production_rate_per_hour(speed) / 60.0;
+
+    // defer casting until as late as possible to retain precision
+    rate_per_minute as u32
 }

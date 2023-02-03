@@ -16,9 +16,13 @@ pub fn create_buffer(count: usize) -> Vec<u8> {
 /// Its first five elements are `1, 1, 2, 3, 5`.
 pub fn fibonacci() -> Vec<u8> {
     let mut v = vec![1, 1];
-    
+
     while v.len() < 5 {
-        v.push(v[v.len()-2] + v[v.len()-1]);
+        // not really worth changing, and probably less performant,
+        // but just for the sake of it, an alternative method using slices.
+        let next = v[v.len() - 2..].iter().sum();
+
+        v.push(next);
     }
 
     v
