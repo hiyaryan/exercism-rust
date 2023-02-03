@@ -1,16 +1,14 @@
-// This stub file contains items that aren't used yet; feel free to remove this module attribute
-// to enable stricter warnings.
-#![allow(unused)]
-
 use std::collections::HashMap;
 
 pub fn can_construct_note(magazine: &[&str], note: &[&str]) -> bool {
-    let mut magazine_word_count= HashMap::with_capacity(magazine.len());
-    let mut i: u32;
+    let mut magazine_word_count = HashMap::with_capacity(magazine.len());
     for word in magazine {
-        // Return the current count from the HashMap then increment it. 
+        // Return the current count from the HashMap then increment it.
         // If it doesn't exist initialize it to zero then increment it.
-        magazine_word_count.entry(word).and_modify(|i| *i += 1).or_insert(1); 
+        magazine_word_count
+            .entry(word)
+            .and_modify(|i| *i += 1)
+            .or_insert(1);
     }
 
     // Main loop through the words in the note.
