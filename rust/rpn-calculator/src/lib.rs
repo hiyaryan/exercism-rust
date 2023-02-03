@@ -10,7 +10,7 @@ pub enum CalculatorInput {
 pub fn evaluate(inputs: &[CalculatorInput]) -> Option<i32> {
     // ensure there are CalculatorInput to perform operations in RPN
     if inputs.is_empty() {
-        return None
+        return None;
     }
 
     // a stack to hold operands
@@ -30,21 +30,28 @@ pub fn evaluate(inputs: &[CalculatorInput]) -> Option<i32> {
                 let left_operand = stack.pop()?;
 
                 // perform operation then push it onto the stack
-                match operation {
-                    CalculatorInput::Add => stack.push(left_operand + right_operand),
-                    CalculatorInput::Subtract => stack.push(left_operand - right_operand),
-                    CalculatorInput::Multiply => stack.push(left_operand * right_operand),
-                    CalculatorInput::Divide => {
-                        // if the divisor is 0 save the world from ending
-                        if right_operand == 0 {
-                            return None
-                        }
+                //
+                // The reason for using `checked` variants is that the default behavior
+                // for integer overflows is to wrap the values, see:
+                // https://doc.rust-lang.org/book/ch03-02-data-types.html#integer-overflow
+                //
+                // Likely that is not a feature of the calculator, so these checked variants
+                // will cause the calculation to "fail safely" by returning `None`
+                let value = match operation {
+                    CalculatorInput::Add => left_operand.checked_add(right_operand),
+                    CalculatorInput::Subtract => left_operand.checked_sub(right_operand),
+                    CalculatorInput::Multiply => left_operand.checked_mul(right_operand),
+                    // checked_div handles the divide-by-zero checks
+                    CalculatorInput::Divide => left_operand.checked_div(right_operand),
+                    _ => unreachable!(),
+                    // Since all the branches use `checked_*` methods which return `Option`,
+                    // we can unpack them using one `?`
+                }?;
 
-                        stack.push(left_operand / right_operand)
-                    }
-                    _ => (),
-                }
-            },
+                // Calculate the value to push separately from adding that value back to the
+                // stack to avoid repetition
+                stack.push(value);
+            }
         }
     }
 
