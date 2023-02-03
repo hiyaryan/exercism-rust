@@ -1,9 +1,3 @@
-// This stub file contains items that aren't used yet; feel free to remove this module attribute
-// to enable stricter warnings.
-#![allow(unused)]
-
-use std::ops::DivAssign;
-
 pub fn divmod(dividend: i16, divisor: i16) -> (i16, i16) {
     (dividend / divisor, dividend % divisor)
 }
